@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kiểm tra kết nối backend — SellerGraph</title>
+    <link rel="icon" type="image/webp" href="assets/logo.webp" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="console.css" />
+    <style>
+      main { max-width: 760px; margin: 0 auto; padding: 26px clamp(14px, 3vw, 24px) 50px; }
+      h1 { font-size: 19px; margin: 0 0 6px; letter-spacing: -0.02em; }
+      .lede { color: var(--muted); font-size: 13px; margin: 0 0 20px; }
+      .row {
+        display: flex; align-items: center; gap: 11px;
+        padding: 12px 14px; margin-bottom: 8px;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+      }
+      .row .what { flex: 1; font-size: 13.5px; }
+      .row .detail { font-family: var(--font-mono); font-size: 11.5px; color: var(--dim); margin-top: 3px; }
+      .controls { display: flex; gap: 9px; margin-bottom: 18px; }
+      .controls input {
+        flex: 1; padding: 10px 13px; background: rgba(0,0,0,0.4);
+        border: 1px solid var(--line-strong); border-radius: 10px;
+        color: var(--text); font-family: var(--font-mono); font-size: 12.5px;
+      }
+      .verdict { margin: 20px 0 0; padding: 15px 17px; border-radius: 12px; font-size: 13.5px; line-height: 1.6; }
+      .verdict.ok  { background: rgba(74,222,128,0.1);  border: 1px solid rgba(74,222,128,0.3); color: #bbf7d0; }
+      .verdict.bad { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fecaca; }
+      .verdict code { font-family: var(--font-mono); font-size: 12px; }
+      a.back { display: inline-block; margin-top: 18px; color: var(--muted); font-size: 13px; }
+      a.back:hover { color: #fff; }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"><img src="assets/logo.webp" alt="" /></span>
+        <span>SellerGraph</span>
+      </a>
+      <span class="topbar-spacer"></span>
+      <span class="role-chip"><span class="dot"></span>Chẩn đoán</span>
+    </header>
+
+    <main>
+      <h1>Kiểm tra kết nối backend</h1>
+      <p class="lede">
+        Trang này gọi thẳng API để xem trình duyệt có cho phép không. Dùng khi
+        console báo không kết nối được.
+      </p>
+
+      <div class="controls">
+        <input id="base" type="text" spellcheck="false" />
+        <button class="btn btn-primary" id="run" type="button">Kiểm tra</button>
+      </div>
+
+      <div id="results"></div>
+      <div id="verdict"></div>
+
+      <a class="back" href="login.html">← Về trang đăng nhập</a>
+    </main>
+
+    <script src="api.js"></script>
+    <script>
+      (function () {
+        var results = document.getElementById("results");
+        var verdict = document.getElementById("verdict");
+        var baseInput = document.getElementById("base");
+        baseInput.value = SG.baseUrl();
+
+        function row(state, what, detail) {
+          var badge =
+            state === "ok" ? '<span class="badge badge-ok">OK</span>'
+            : state === "bad" ? '<span class="badge badge-bad">LỖI</span>'
+            : '<span class="spinner"></span>';
+          return (
+            '<div class="row">' + badge +
+            '<div class="what">' + SG.esc(what) +
+            (detail ? '<div class="detail">' + SG.esc(detail) + "</div>" : "") +
+            "</div></div>"
+          );
+        }
+
+        function run() {
+          SG.setBaseUrl(baseInput.value);
+          var base = SG.baseUrl();
+          results.innerHTML = row("wait", "Đang gọi " + base + "/health …");
+          verdict.innerHTML = "";
+
+          var started = Date.now();
+          SG.health()
+            .then(function (data) {
+              var ms = Date.now() - started;
+              results.innerHTML =
+                row("ok", "GET " + base + "/health", JSON.stringify(data) + " · " + ms + "ms");
+              return SG.systemInfo();
+            })
+            .then(function (info) {
+              results.innerHTML +=
+                row("ok", "GET /v1/system/info",
+                    "execution_mode=" + info.execution_mode +
+                    " · model=" + info.llm.model +
+                    " · tools=" + info.tools.length);
+              return SG.listSellers();
+            })
+            .then(function (data) {
+              results.innerHTML +=
+                row("ok", "GET /v1/sellers", data.count + " gian hàng: " +
+                    data.sellers.map(function (s) { return s.seller_id; }).join(", "));
+              verdict.innerHTML =
+                '<div class="verdict ok"><strong>Kết nối được.</strong> ' +
+                "Console sẽ dùng dữ liệu thật từ backend này. " +
+                "Trang gọi từ <code>" + SG.esc(location.origin) + "</code> tới <code>" +
+                SG.esc(SG.baseUrl()) + "</code> mà trình duyệt không chặn.</div>";
+            })
+            .catch(function (error) {
+              results.innerHTML +=
+                row("bad", error.code || "LỖI", error.message);
+              var mixed =
+                location.protocol === "https:" && SG.baseUrl().indexOf("http://") === 0;
+              verdict.innerHTML =
+                '<div class="verdict bad"><strong>Không gọi được.</strong><br>' +
+                (mixed
+                  ? "Trang này chạy HTTPS còn backend là HTTP. Nếu trình duyệt chặn " +
+                    "(mixed content / private network), cách chắc chắn nhất là mở console " +
+                    "ngay từ backend: <code>http://localhost:8000/app/login.html</code>."
+                  : "Kiểm tra backend đã chạy chưa: <code>uvicorn app.main:app --port 8000</code>.") +
+                "</div>";
+            });
+        }
+
+        document.getElementById("run").addEventListener("click", run);
+        run();
+      })();
+    </script>
+  </body>
+</html>
