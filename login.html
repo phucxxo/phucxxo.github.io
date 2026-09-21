@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Đăng nhập — SellerGraph</title>
+    <meta name="theme-color" content="#000000" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/webp" href="assets/logo.webp" />
+    <link rel="stylesheet" href="console.css" />
+    <style>
+      body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        background: #000;
+        overflow: hidden;
+      }
+      .bg { position: fixed; inset: 0; background: #000; overflow: hidden; }
+      .bg video {
+        position: absolute; inset: 0; width: 100%; height: 100%;
+        object-fit: cover; pointer-events: none; opacity: 0.55;
+      }
+      .bg::after {
+        content: ""; position: absolute; inset: 0;
+        background: radial-gradient(ellipse at center, rgba(0,0,0,0.35), rgba(0,0,0,0.85));
+      }
+      .login {
+        position: relative; z-index: 1;
+        width: min(400px, calc(100vw - 32px));
+        padding: 30px 28px 26px;
+        background: rgba(17, 17, 20, 0.86);
+        backdrop-filter: blur(18px);
+        border: 1px solid var(--line-strong);
+        border-radius: 22px;
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6);
+      }
+      .login-head { display: flex; align-items: center; gap: 11px; margin-bottom: 4px; }
+      .login h1 {
+        margin: 16px 0 5px; font-size: 21px; font-weight: 600; letter-spacing: -0.02em;
+      }
+      .login p.sub { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
+      .field { margin-bottom: 13px; }
+      .field label {
+        display: block; margin-bottom: 6px; font-size: 12px;
+        font-weight: 500; color: #b8b8bd;
+      }
+      .field input {
+        width: 100%; padding: 11px 13px;
+        background: rgba(0, 0, 0, 0.42);
+        border: 1px solid var(--line-strong);
+        border-radius: 10px; color: var(--text); font-size: 14px;
+      }
+      .field input:focus {
+        outline: none; border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(0, 0, 0, 0.6);
+      }
+      .login .btn-primary { width: 100%; padding: 12px; margin-top: 6px; }
+      .error {
+        margin: 0 0 13px; padding: 9px 12px;
+        background: rgba(248, 113, 113, 0.12);
+        border: 1px solid rgba(248, 113, 113, 0.32);
+        border-radius: 9px; color: #fca5a5; font-size: 12.5px;
+      }
+      .error[hidden] { display: none; }
+      .hints { margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--line); }
+      .hints-title {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+        color: var(--dim); margin-bottom: 9px;
+      }
+      .hint {
+        display: flex; align-items: center; gap: 9px; width: 100%;
+        padding: 9px 11px; margin-bottom: 6px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line); border-radius: 10px;
+        color: var(--text); text-align: left; font-size: 12.5px;
+        transition: background 0.16s ease;
+      }
+      .hint:hover { background: rgba(255, 255, 255, 0.08); }
+      .hint code {
+        font-family: var(--font-mono); font-size: 11.5px; color: #c9c9ce;
+      }
+      .hint .who { flex: 1; }
+      .disclaimer {
+        margin: 14px 0 0; font-size: 11px; line-height: 1.45; color: var(--dim);
+      }
+      .back { display: block; margin-top: 14px; text-align: center; font-size: 12.5px; color: var(--muted); }
+      .back:hover { color: #fff; }
+    </style>
+  </head>
+
+  <body>
+    <div class="bg">
+      <video autoplay muted loop playsinline>
+        <source
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+          type="video/mp4"
+        />
+      </video>
+    </div>
+
+    <main class="login">
+      <div class="login-head">
+        <span class="brand-mark"><img src="assets/logo.webp" alt="" /></span>
+        <strong>SellerGraph</strong>
+      </div>
+
+      <h1>Đăng nhập</h1>
+      <p class="sub">Chọn vai trò để vào hệ thống.</p>
+
+      <p class="error" id="error" hidden></p>
+
+      <form id="login-form" autocomplete="off">
+        <div class="field">
+          <label for="username">Tài khoản</label>
+          <input id="username" name="username" type="text" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+        </div>
+        <button class="btn btn-primary" type="submit">Đăng nhập</button>
+      </form>
+
+      <div class="hints">
+        <div class="hints-title">Tài khoản demo — bấm để điền sẵn</div>
+        <button class="hint" type="button" data-user="seller" data-pass="1234">
+          <span class="who"><strong>Người bán</strong> — chatbot vốn lưu động</span>
+          <code>seller / 1234</code>
+        </button>
+        <button class="hint" type="button" data-user="admin" data-pass="1234">
+          <span class="who"><strong>Quản trị</strong> — bảng tổng hợp &amp; hồ sơ</span>
+          <code>admin / 1234</code>
+        </button>
+        <p class="disclaimer">
+          Đây chỉ là cổng phân vai để demo, <strong>không phải bảo mật</strong>: mật khẩu
+          nằm ngay trong JavaScript và backend không kiểm tra người gọi.
+        </p>
+      </div>
+
+      <a class="back" href="index.html">← Về trang chủ</a>
+    </main>
+
+    <script src="auth.js"></script>
+    <script>
+      (function () {
+        var form = document.getElementById("login-form");
+        var errorBox = document.getElementById("error");
+
+        // Already signed in? Go straight through.
+        var existing = Auth.session();
+        if (existing) {
+          location.replace(existing.role === "admin" ? "admin.html" : "app.html");
+          return;
+        }
+
+        Array.prototype.forEach.call(document.querySelectorAll(".hint"), function (btn) {
+          btn.addEventListener("click", function () {
+            document.getElementById("username").value = btn.dataset.user;
+            document.getElementById("password").value = btn.dataset.pass;
+            errorBox.hidden = true;
+            form.querySelector('button[type="submit"]').focus();
+          });
+        });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var session = Auth.login(
+            document.getElementById("username").value,
+            document.getElementById("password").value
+          );
+          if (!session) {
+            errorBox.textContent = "Sai tài khoản hoặc mật khẩu.";
+            errorBox.hidden = false;
+            return;
+          }
+          location.href = session.role === "admin" ? "admin.html" : "app.html";
+        });
+      })();
+    </script>
+  </body>
+</html>
