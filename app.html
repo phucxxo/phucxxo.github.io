@@ -2,75 +2,12 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Trợ lý vốn lưu động — SellerGraph</title>
-    <meta name="theme-color" content="#08080a" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/webp" href="assets/logo.webp" />
-    <link rel="stylesheet" href="console.css" />
-    <link rel="stylesheet" href="chat.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="0; url=workspace.html" />
+    <title>Đang chuyển tới SellerGraph</title>
+    <script>location.replace("workspace.html" + location.search + location.hash);</script>
   </head>
-
-  <body class="chat-body">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-mark"><img src="assets/logo.webp" alt="" /></span>
-        <span>SellerGraph</span>
-      </a>
-
-      <label class="sr-only" for="seller-picker">Chọn gian hàng</label>
-      <select id="seller-picker" class="seller-picker"></select>
-
-      <span class="topbar-spacer"></span>
-
-      <span class="role-chip"><span class="dot"></span><span id="role-label">Người bán</span></span>
-      <button class="btn btn-sm" id="logout" type="button">Đăng xuất</button>
-    </header>
-
-    <div class="banner banner-demo" id="demo-banner" hidden>
-      <strong>DỮ LIỆU DEMO</strong>
-      <span id="demo-note">— chưa kết nối backend; đây là bản chụp kết quả thật đã lưu sẵn, không phải dữ liệu đang chạy.</span>
-      <span class="spacer"></span>
-      <input id="api-base" type="text" spellcheck="false" placeholder="http://localhost:8000" />
-      <button class="btn btn-sm" id="api-save" type="button">Kết nối backend</button>
-    </div>
-
-    <main class="chat-shell">
-      <section class="thread" id="thread" aria-live="polite"></section>
-
-      <div class="composer-wrap">
-        <div class="suggestions" id="suggestions">
-          <button class="chip" type="button">30 ngày tới tôi có thiếu vốn nhập hàng không?</button>
-          <button class="chip" type="button">Tồn kho của tôi còn bán được bao lâu?</button>
-          <button class="chip" type="button">Nếu vay thì chi phí tài chính bao nhiêu?</button>
-        </div>
-        <form class="composer" id="composer">
-          <textarea
-            id="message"
-            rows="1"
-            placeholder="Hỏi về vốn lưu động, tồn kho, hạn mức…"
-            maxlength="2000"
-          ></textarea>
-          <button class="btn btn-primary" id="send" type="submit">Gửi</button>
-        </form>
-        <p class="composer-note">
-          Mọi con số tài chính do công cụ tất định sinh ra — mô hình chỉ diễn giải, không tự đặt số.
-        </p>
-      </div>
-    </main>
-
-    <script src="api.js"></script>
-    <script src="auth.js"></script>
-    <script src="demo-data.js"></script>
-    <script src="chat.js"></script>
+  <body>
+    <p>Đang chuyển tới <a href="workspace.html">không gian làm việc SellerGraph</a>…</p>
   </body>
 </html>

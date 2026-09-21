@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Gian hàng của tôi — SellerGraph Core</title>
+  <meta name="theme-color" content="#08080a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <!-- Third-party font CSS is loaded without blocking: a parser-inserted
+         script cannot run while a stylesheet is still pending, and these come
+         from CDNs. Blocking on them left the page looking ready while its
+         handlers were not attached yet. media="print" then flipped on load is
+         the standard way to fetch CSS off the critical path. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" /></noscript>
+  <link rel="icon" href="assets/logo.webp" />
+  <link rel="stylesheet" href="console.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <link rel="stylesheet" href="workspace.css" />
+</head>
+<body class="workspace-body">
+  <div class="workspace-background" aria-hidden="true"></div>
+  <header class="topbar">
+    <button class="btn btn-sm" id="sidebar-toggle" aria-label="Mở hoặc thu gọn thanh dự án" aria-controls="sidebar" aria-expanded="true">☰</button>
+    <a class="brand" href="index.html"><span class="brand-mark"><img src="assets/logo.webp" alt="" /></span>SellerGraph <span class="core-label">CORE</span></a>
+    <span class="topbar-spacer"></span><span class="topbar-caption">Trợ lý vốn lưu động</span>
+    <button class="btn btn-sm" id="logout">Đăng xuất</button>
+  </header>
+  <div class="banner banner-demo" id="demo-banner" hidden><strong>DỮ LIỆU DEMO</strong><span>Bản chụp kết quả thật, không phải dữ liệu đang chạy.</span><input id="api-base" aria-label="Địa chỉ backend" /><button class="btn btn-sm" id="api-save">Kết nối backend</button></div>
+  <div id="notice" class="workspace-notice" role="status" hidden></div>
+  <div class="workspace-shell" id="workspace-shell">
+    <button class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Đóng thanh dự án" hidden></button>
+    <aside id="sidebar" class="workspace-sidebar" aria-label="Dự án và hồ sơ">
+      <div class="account-chip"><span class="account-avatar" aria-hidden="true">●</span><div><strong id="account-name"></strong><small id="account-role"></small></div></div>
+      <div class="sidebar-section"><h2>Dự án của bạn</h2><div id="project-list" aria-live="polite">Đang tải dự án…</div><button class="btn sidebar-button" data-do="new-project">+ Dự án mới</button></div>
+      <div id="profile-nav" class="sidebar-section"></div>
+      <div id="application-nav" class="sidebar-section"></div>
+      <label class="sidebar-width">Độ rộng thanh dự án<input id="sidebar-width" type="range" min="240" max="380" step="10" value="280" /></label>
+      <p class="sidebar-foot">Gemini lập kế hoạch và diễn giải.<br />Lõi tài chính tính số và lưu dấu vết.</p>
+    </aside>
+    <main id="workspace-main" tabindex="-1"><div class="empty">Đang mở gian hàng…</div></main>
+  </div>
+  <input type="file" id="profile-file" accept=".xlsx,.xls,.json,.zip" hidden />
+  <script src="api.js"></script><script src="auth.js"></script><script src="demo-data.js"></script><script src="workspace.js"></script>
+</body>
+</html>

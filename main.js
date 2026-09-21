@@ -95,7 +95,7 @@
     function setMenu(open) {
       isOpen = open;
       burger.setAttribute("aria-expanded", String(open));
-      burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      burger.setAttribute("aria-label", open ? "Đóng trình đơn" : "Mở trình đơn");
       menu.hidden = !open;
       overlay.hidden = !open;
       document.body.classList.toggle("menu-open", open);

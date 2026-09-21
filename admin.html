@@ -1,133 +1,35 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Bảng quản trị — SellerGraph</title>
-    <meta name="theme-color" content="#08080a" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/webp" href="assets/logo.webp" />
-    <link rel="stylesheet" href="console.css" />
-    <link rel="stylesheet" href="admin.css" />
-  </head>
-
-  <body class="admin-body">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-mark"><img src="assets/logo.webp" alt="" /></span>
-        <span>SellerGraph</span>
-      </a>
-      <span class="badge badge-info">QUẢN TRỊ</span>
-
-      <span class="topbar-spacer"></span>
-
-      <button class="btn btn-sm" id="refresh" type="button">Làm mới</button>
-      <span class="role-chip is-admin"><span class="dot"></span><span id="role-label">Quản trị viên</span></span>
-      <button class="btn btn-sm" id="logout" type="button">Đăng xuất</button>
-    </header>
-
-    <div class="banner banner-demo" id="demo-banner" hidden>
-      <strong>DỮ LIỆU DEMO</strong>
-      <span id="demo-note">— chưa kết nối backend; đây là bản chụp kết quả thật đã lưu sẵn, không phải dữ liệu đang chạy.</span>
-      <span class="spacer"></span>
-      <input id="api-base" type="text" spellcheck="false" placeholder="http://localhost:8000" />
-      <button class="btn btn-sm" id="api-save" type="button">Kết nối backend</button>
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Liên minh vốn — SellerGraph Core</title><meta name="theme-color" content="#080d17" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <!-- Third-party font CSS is loaded without blocking: a parser-inserted
+         script cannot run while a stylesheet is still pending, and these come
+         from CDNs. Blocking on them left the page looking ready while its
+         handlers were not attached yet. media="print" then flipped on load is
+         the standard way to fetch CSS off the critical path. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" /></noscript>
+  <link rel="icon" type="image/webp" href="assets/logo.webp" /><link rel="stylesheet" href="console.css" /><link rel="stylesheet" href="chat.css" /><link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark"><img src="assets/logo.webp" alt="" /></span><span>SellerGraph</span></a><span class="badge badge-info admin-label">QUẢN TRỊ LIÊN MINH</span><span class="topbar-spacer"></span><button class="btn btn-sm" id="refresh" type="button">Làm mới</button><span class="role-chip is-admin" id="role-label">Quản trị viên</span><button class="btn btn-sm" id="logout" type="button">Đăng xuất</button></header>
+  <div class="banner banner-demo" id="demo-banner" hidden><strong>DỮ LIỆU DEMO</strong><span id="demo-note">Bản chụp kết quả thật; không phải dữ liệu trực tiếp.</span><label class="sr-only" for="api-base">Địa chỉ backend</label><input id="api-base" type="text" spellcheck="false" placeholder="http://localhost:8000" /><button class="btn btn-sm" id="api-save" type="button">Kết nối backend</button></div>
+  <main class="admin-main">
+    <div class="board-heading"><div><p class="eyebrow">SELLERGRAPH CORE / LIÊN MINH NGÂN HÀNG</p><h1>Nhìn rõ dòng vốn.<br /><span>Quyết định có căn cứ.</span></h1><p>Số liệu do lõi tài chính tính bằng công thức. Gemini lập kế hoạch, gọi công cụ và giải thích.</p></div><span class="mono" id="updated-at">Đang kết nối…</span></div>
+    <div id="board-notice" role="status" aria-live="polite"></div><div class="kpis" id="kpis"><div class="empty">Đang tải chỉ số…</div></div>
+    <div class="dashboard-grid">
+      <section class="panel alliance-panel"><div class="section-head"><h2>Liên minh ngân hàng</h2><span class="badge badge-info">ĐIỀU PHỐI VỐN</span></div><div id="alliance"><div class="empty">Đang tải nguồn vốn…</div></div></section>
+      <section class="panel"><div class="section-head"><h2>Phân bố rủi ro</h2></div><div class="segmented" id="risk-toggle" aria-label="Đơn vị phân bố rủi ro"><button type="button" data-risk="count" class="is-active" aria-pressed="true">Gian hàng</button><button type="button" data-risk="exposure" aria-pressed="false">Dư nợ</button></div><div id="risk"><div class="empty">Đang tải…</div></div></section>
+      <section class="panel"><div class="section-head"><h2>Dòng vốn 14 ngày</h2><span class="mono">VND</span></div><div id="daily"><div class="empty">Đang tải…</div></div></section>
+      <section class="panel"><div class="section-head"><h2>Cơ cấu nguồn vốn</h2></div><div id="funding"><div class="empty">Đang tải…</div></div></section>
     </div>
-
-    <main class="admin-main">
-      <div class="kpis" id="kpis"></div>
-
-      <section class="section">
-        <div class="section-head">
-          <h2>Danh mục người bán</h2>
-          <span class="spacer"></span>
-          <span class="mono" id="sellers-count"></span>
-        </div>
-        <div class="panel table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Gian hàng</th>
-                <th>Rủi ro</th>
-                <th class="num">PD</th>
-                <th class="num">Hạn mức KN</th>
-                <th class="num">Dư nợ + phải trả</th>
-                <th class="num">Đã giải ngân</th>
-                <th class="num">Hồ sơ</th>
-                <th>Gần nhất</th>
-              </tr>
-            </thead>
-            <tbody id="sellers-body">
-              <tr><td colspan="8" class="empty">Đang tải…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h2>Lịch sử hồ sơ đã chạy</h2>
-          <span class="spacer"></span>
-          <label class="sr-only" for="seller-filter">Lọc theo gian hàng</label>
-          <select class="filter-select" id="seller-filter">
-            <option value="">Tất cả gian hàng</option>
-          </select>
-        </div>
-        <div class="panel table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Thời điểm</th>
-                <th>Gian hàng</th>
-                <th>Câu hỏi của người bán</th>
-                <th>Kết quả</th>
-                <th class="num">Nhu cầu vốn</th>
-                <th class="num">Vay</th>
-                <th class="num">Tools</th>
-              </tr>
-            </thead>
-            <tbody id="workflows-body">
-              <tr><td colspan="7" class="empty">Đang tải…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </main>
-
-    <!-- ============ Run detail drawer ============ -->
-    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
-    <aside class="drawer" id="drawer" hidden aria-label="Chi tiết hồ sơ">
-      <div class="drawer-head">
-        <div style="flex:1; min-width:0">
-          <h3 id="drawer-title">Hồ sơ</h3>
-          <code class="mono" id="drawer-sub"></code>
-        </div>
-        <button class="drawer-close" id="drawer-close" type="button" aria-label="Đóng">✕</button>
-      </div>
-
-      <div class="tabs" id="tabs">
-        <button class="tab is-active" data-tab="overview" type="button">Tổng quan</button>
-        <button class="tab" data-tab="io" type="button">Đầu vào / đầu ra</button>
-        <button class="tab" data-tab="audit" type="button">Nhật ký</button>
-        <button class="tab" data-tab="action" type="button">Đề xuất &amp; giải ngân</button>
-      </div>
-
-      <div class="drawer-body">
-        <div class="tab-panel" id="panel-overview"></div>
-        <div class="tab-panel" id="panel-io" hidden></div>
-        <div class="tab-panel" id="panel-audit" hidden></div>
-        <div class="tab-panel" id="panel-action" hidden></div>
-      </div>
-    </aside>
-
-    <script src="api.js"></script>
-    <script src="auth.js"></script>
-    <script src="demo-data.js"></script>
-    <script src="admin.js"></script>
-  </body>
+    <section class="panel section"><div class="section-head"><h2>Hàng đợi phê duyệt</h2><span id="queue-count" class="mono"></span></div><div id="applications"><div class="empty">Đang tải hồ sơ…</div></div></section>
+    <div class="dashboard-grid secondary-grid"><section class="panel"><div class="section-head"><h2>Cảnh báo sớm</h2></div><div id="watchlist"><div class="empty">Đang tải…</div></div></section><section class="panel"><div class="section-head"><h2>Tình trạng mô hình</h2></div><div id="model"><div class="empty">Đang tải…</div></div></section></div>
+    <section class="panel section"><div class="section-head"><h2>Danh mục người bán</h2><span class="mono" id="sellers-count"></span></div><p class="kpi-sub">Bấm tiêu đề cột để sắp xếp; chọn gian hàng để xem hồ sơ và truy vết.</p><div class="table-wrap"><table><thead id="seller-head"><tr><th><button data-sort="display_name">Gian hàng ↕</button></th><th><button data-sort="recommended_limit">Hạn mức ↕</button></th><th><button data-sort="interest_rate">Lãi suất năm ↕</button></th><th><button data-sort="pd">PD ↕</button></th><th><button data-sort="risk_band">Rủi ro ↕</button></th><th><button data-sort="funding_need">Nhu cầu vốn ↕</button></th><th><button data-sort="exposure">Dư nợ ↕</button></th></tr></thead><tbody id="sellers-body"><tr><td colspan="7" class="empty">Đang tải gian hàng…</td></tr></tbody></table></div></section>
+  </main>
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div><aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drawer-title"><div class="drawer-head"><div class="drawer-heading"><h3 id="drawer-title">Hồ sơ người bán</h3><code class="mono" id="drawer-sub"></code></div><button class="drawer-close" id="drawer-close" type="button" aria-label="Đóng">✕</button></div><div class="tabs" id="tabs" role="tablist"><button class="tab is-active" data-tab="scores" role="tab">Chỉ số</button><button class="tab" data-tab="profile" role="tab">Hồ sơ</button><button class="tab" data-tab="applications" role="tab">Hồ sơ vay</button><button class="tab" data-tab="conversations" role="tab">Lịch sử chat</button><button class="tab" data-tab="workflows" role="tab">Lần chạy</button></div><div class="drawer-body" id="drawer-body" aria-live="polite"></div></aside>
+  <script src="api.js"></script><script src="auth.js"></script><script src="demo-data.js"></script><script src="admin.js"></script>
+</body>
 </html>

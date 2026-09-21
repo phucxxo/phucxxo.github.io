@@ -5,18 +5,20 @@ Static HTML + CSS + vanilla JS. No framework, no build step.
 ```
 index.html      landing page (video hero)
 login.html      role gate: seller / admin
-app.html        seller chatbot
-admin.html      admin board + per-run forensics
+app.html        compatibility redirect to workspace.html
+workspace.html  seller projects, onboarding, chat and profile editor
+admin.html      alliance portfolio board + seller detail drawer
 
 styles.css      landing page
 console.css     shared console shell
-chat.css        seller chat
+chat.css        shared chat bubbles
+workspace.css   seller workspace
 admin.css       admin board
 
 main.js         landing page (stats count-up, mobile menu)
 api.js          backend client + formatting helpers
 auth.js         demo role gate
-chat.js         seller chat
+workspace.js    seller workspace and schema-driven onboarding
 admin.js        admin board
 demo-data.js    frozen snapshot of real backend responses
 
@@ -28,8 +30,8 @@ fonts/GeistPixel-Circle.woff2
 
 | Tài khoản | Mật khẩu | Thấy gì |
 |---|---|---|
-| `seller` | `1234` | Chatbot vốn lưu động, phê duyệt / từ chối đề xuất |
-| `admin`  | `1234` | Bảng tổng hợp nhiều gian hàng, chi tiết đầu vào/đầu ra từng hồ sơ |
+| `seller` | `1234` | Dự án, hồ sơ 5 khối, hội thoại và hồ sơ xin cấp vốn |
+| `admin`  | `1234` | Danh mục liên minh, hàng phê duyệt và truy vết từng người bán |
 
 > **Đây không phải bảo mật.** Mật khẩu nằm ngay trong `auth.js` mà ai cũng đọc
 > được, và backend không kiểm tra người gọi. Nó chỉ để demo hai màn hình khác
@@ -49,24 +51,31 @@ uvicorn app.main:app --reload --port 8000
 
 Same origin, so no CORS and no mixed-content problems at all.
 
-**2. Open the published page and point it at a local backend**
+**2. Another machine on the LAN**
 
-Open the GitHub Pages URL, then paste `http://localhost:8000` into the
-connection bar. The backend already sends the CORS and Private-Network headers
-Chrome needs for an HTTPS page to reach localhost.
+Paste that machine's `http://192.168.x.x:8000` into the connection bar. Works
+because both ends are plain HTTP.
 
-**3. Demo data**
+> **The published GitHub Pages site cannot reach your localhost.** This was
+> measured, not assumed: Chrome blocks an HTTPS page from calling
+> `http://localhost` (mixed content / Private Network Access) and no
+> server-side header opens it back up. The backend does send the CORS and
+> Private-Network headers, and the browser still refuses. So the published
+> page is for looking at the UI; for real data, use option 1.
 
-With no backend reachable, click *Dùng dữ liệu demo*. `demo-data.js` is a
-**frozen snapshot of real backend responses** — genuine engine output, not
-invented numbers — and every screen shows a `DỮ LIỆU DEMO` banner while it is
-in use. Regenerate it with `python scripts/capture_demo_data.py` from the
-backend repo.
+**3. Demo data (what the published site shows)**
+
+With no backend reachable the console falls back on its own — no button to
+press. `demo-data.js` is a **frozen snapshot of real backend responses** —
+genuine engine output, not invented numbers — and every screen shows a
+`DỮ LIỆU DEMO` banner while it is in use. Regenerate it with
+`python scripts/capture_demo_data.py` from the backend repo.
 
 ## What the seller screen shows
 
-The model's prose and the engine's numbers are rendered as **separate blocks**
-on purpose:
+The workspace manages several shop projects, schema-driven onboarding, profile
+health and funding applications. The model's prose and the engine's numbers
+are rendered as **separate blocks** on purpose:
 
 - the explanation is free text with no authority over any figure;
 - the **SỐ LIỆU TỪ CÔNG CỤ TẤT ĐỊNH** panel is rendered field by field straight
@@ -77,14 +86,10 @@ so this one never does.
 
 ## What the admin screen shows
 
-- Portfolio KPIs and a seller table (risk band, PD, limit, exposure, executed).
-- Every run, newest first, filterable by seller.
-- Click a run for four tabs: **Tổng quan**, **Đầu vào / đầu ra** (every tool
-  call with its validated input, its output and the audit hashes), **Nhật ký**,
-  and **Đề xuất & giải ngân**.
-
-Read-only by design: approving from an oversight screen would record the
-decision against nobody.
+- Portfolio KPIs, alliance capital, risk and funding charts, alerts and model status.
+- A decision queue for review, approval, rejection and disbursement.
+- Seller detail tabs for scores, the five profile blocks, applications,
+  conversations, and workflow input/output traces with audit hashes.
 
 ## Notes
 

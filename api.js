@@ -83,7 +83,9 @@
         headers: { Accept: "application/json" },
         mode: "cors",
       };
-      if (opts.body !== undefined) {
+      if (opts.formData) {
+        init.body = opts.formData;
+      } else if (opts.body !== undefined) {
         init.headers["Content-Type"] = "application/json";
         init.body = JSON.stringify(opts.body);
       }
@@ -141,6 +143,32 @@
       return API.request(path, merged);
     },
 
+    put: function (path, body, opts) {
+      var merged = opts || {};
+      merged.method = "PUT";
+      merged.body = body === undefined ? {} : body;
+      return API.request(path, merged);
+    },
+
+    remove: function (path, opts) {
+      var merged = opts || {};
+      merged.method = "DELETE";
+      return API.request(path, merged);
+    },
+
+    upload: function (path, file, opts) {
+      var form = new FormData();
+      var merged = opts || {};
+      form.append("file", file);
+      merged.method = "POST";
+      merged.formData = form;
+      return API.request(path, merged);
+    },
+
+    downloadUrl: function (path) {
+      return API.baseUrl() + path;
+    },
+
     /* ---- endpoints ------------------------------------------------------ */
     health: function () {
       return API.get("/health", { timeout: 6000 });
@@ -189,7 +217,112 @@
       );
     },
 
+    /* onboarding */
+    onboardingSchema: function () {
+      return API.get("/v1/onboarding/schema");
+    },
+    onboardingTemplate: function () {
+      return API.downloadUrl("/v1/onboarding/template.xlsx");
+    },
+    onboardingUpload: function (file) {
+      return API.upload("/v1/onboarding/upload", file, { timeout: 120000 });
+    },
+    onboardingValidate: function (profile) {
+      return API.post("/v1/onboarding/validate", { profile: profile });
+    },
+
+    /* projects */
+    projects: function (owner) {
+      return API.get("/v1/projects?owner=" + encodeURIComponent(owner));
+    },
+    createProject: function (payload) {
+      return API.post("/v1/projects", payload);
+    },
+    importProject: function (payload) {
+      return API.post("/v1/projects/import", payload);
+    },
+    project: function (id) {
+      return API.get("/v1/projects/" + encodeURIComponent(id));
+    },
+    updateProjectProfile: function (id, profile) {
+      return API.put("/v1/projects/" + encodeURIComponent(id) + "/profile", {
+        profile: profile,
+      });
+    },
+    uploadProjectProfile: function (id, file) {
+      return API.upload(
+        "/v1/projects/" + encodeURIComponent(id) + "/profile/upload",
+        file,
+        { timeout: 120000 }
+      );
+    },
+    downloadProjectProfile: function (id) {
+      return API.downloadUrl(
+        "/v1/projects/" + encodeURIComponent(id) + "/profile.xlsx"
+      );
+    },
+    deleteProject: function (id) {
+      return API.remove("/v1/projects/" + encodeURIComponent(id));
+    },
+
+    /* conversations */
+    conversations: function (projectId) {
+      return API.get(
+        "/v1/projects/" + encodeURIComponent(projectId) + "/conversations"
+      );
+    },
+    createConversation: function (projectId, title) {
+      return API.post(
+        "/v1/projects/" + encodeURIComponent(projectId) + "/conversations",
+        { title: title === undefined ? null : title }
+      );
+    },
+    conversationMessages: function (conversationId) {
+      return API.get(
+        "/v1/conversations/" + encodeURIComponent(conversationId) + "/messages"
+      );
+    },
+    messages: function (conversationId) {
+      return API.conversationMessages(conversationId);
+    },
+    sendMessage: function (conversationId, payload) {
+      return API.post(
+        "/v1/conversations/" + encodeURIComponent(conversationId) + "/messages",
+        payload,
+        { timeout: 180000 }
+      );
+    },
+    deleteConversation: function (conversationId) {
+      return API.remove(
+        "/v1/conversations/" + encodeURIComponent(conversationId)
+      );
+    },
+    projectHealth: function (projectId) {
+      return API.get(
+        "/v1/projects/" + encodeURIComponent(projectId) + "/health"
+      );
+    },
+
+    /* funding applications */
+    createApplication: function (projectId, payload) {
+      return API.post(
+        "/v1/projects/" + encodeURIComponent(projectId) + "/applications",
+        payload
+      );
+    },
+    projectApplications: function (projectId) {
+      return API.get(
+        "/v1/projects/" + encodeURIComponent(projectId) + "/applications"
+      );
+    },
+    application: function (id) {
+      return API.get("/v1/applications/" + encodeURIComponent(id));
+    },
+
     /* admin */
+    adminPortfolio: function () {
+      return API.get("/v1/admin/portfolio");
+    },
     adminStats: function () {
       return API.get("/v1/admin/stats");
     },
@@ -206,6 +339,26 @@
     },
     adminWorkflowDetail: function (id) {
       return API.get("/v1/admin/workflows/" + encodeURIComponent(id));
+    },
+    adminApplications: function () {
+      return API.get("/v1/admin/applications");
+    },
+    adminDecision: function (id, payload) {
+      return API.post(
+        "/v1/admin/applications/" + encodeURIComponent(id) + "/decision",
+        payload
+      );
+    },
+    adminSellerProfile: function (sellerId) {
+      return API.get(
+        "/v1/admin/sellers/" + encodeURIComponent(sellerId) + "/profile"
+      );
+    },
+    adminConversations: function (sellerId, limit) {
+      return API.get(
+        "/v1/admin/conversations?seller_id=" + encodeURIComponent(sellerId) +
+        "&limit=" + encodeURIComponent(limit || 50)
+      );
     },
   };
 

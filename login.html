@@ -7,14 +7,21 @@
     <meta name="theme-color" content="#000000" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Third-party font CSS is loaded without blocking: a parser-inserted
+         script cannot run while a stylesheet is still pending, and these come
+         from CDNs. Blocking on them left the page looking ready while its
+         handlers were not attached yet. media="print" then flipped on load is
+         the standard way to fetch CSS off the critical path. -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
+      rel="stylesheet" media="print" onload="this.media='all'"
     />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" /></noscript>
     <link
       href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
-      rel="stylesheet"
+      rel="stylesheet" media="print" onload="this.media='all'"
     />
+    <noscript><link rel="stylesheet" href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos" /></noscript>
     <link rel="icon" type="image/webp" href="assets/logo.webp" />
     <link rel="stylesheet" href="console.css" />
     <style>
@@ -120,7 +127,11 @@
 
       <p class="error" id="error" hidden></p>
 
-      <form id="login-form" autocomplete="off">
+      <!-- onsubmit is inline on purpose: it is attached while the HTML is parsed,
+           before the stylesheets in <head> unblock the script below. Without it a
+           click during that window falls through to a native GET and puts the
+           password in the URL, the history and the server log. -->
+      <form id="login-form" autocomplete="off" onsubmit="return false">
         <div class="field">
           <label for="username">Tài khoản</label>
           <input id="username" name="username" type="text" autocomplete="username" required />
@@ -160,7 +171,7 @@
         // Already signed in? Go straight through.
         var existing = Auth.session();
         if (existing) {
-          location.replace(existing.role === "admin" ? "admin.html" : "app.html");
+          location.replace(existing.role === "admin" ? "admin.html" : "workspace.html");
           return;
         }
 
@@ -184,7 +195,7 @@
             errorBox.hidden = false;
             return;
           }
-          location.href = session.role === "admin" ? "admin.html" : "app.html";
+          location.href = session.role === "admin" ? "admin.html" : "workspace.html";
         });
       })();
     </script>
