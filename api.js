@@ -50,6 +50,30 @@
 
     demoMode: false,
 
+    /** True when the browser will refuse this page -> this backend.
+     *  Measured, not assumed: a page served over HTTPS (GitHub Pages) calling
+     *  http://localhost is blocked by Chrome as mixed content / private
+     *  network, so there is no point telling the user to press Connect. */
+    isBlockedByBrowser: function () {
+      return (
+        global.location.protocol === "https:" &&
+        API.baseUrl().indexOf("http://") === 0
+      );
+    },
+
+    /** The advice that actually works for the current situation. */
+    connectionHint: function () {
+      if (API.isBlockedByBrowser()) {
+        return (
+          "Trang này chạy HTTPS nên trình duyệt chặn gọi tới localhost. " +
+          "Muốn dùng dữ liệu thật, chạy ./run.sh rồi mở " +
+          "http://localhost:8000/app/login.html"
+        );
+      }
+      return "Bấm Kết nối backend để dùng dữ liệu thật.";
+    },
+
+
     /* ---- transport ------------------------------------------------------ */
     request: function (path, options) {
       var opts = options || {};

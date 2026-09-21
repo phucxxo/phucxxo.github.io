@@ -35,7 +35,7 @@
     if (reason) {
       var tidy = /[.!?]$/.test(reason) ? reason : reason + ".";
       document.getElementById("demo-note").textContent =
-        "— " + tidy + " Bấm Kết nối backend để dùng dữ liệu thật.";
+        "— " + tidy + " " + SG.connectionHint();
     }
     apiInput.value = SG.baseUrl();
     return loadAll();
