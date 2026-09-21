@@ -31,19 +31,12 @@
       <button class="btn btn-sm" id="logout" type="button">Đăng xuất</button>
     </header>
 
-    <div class="banner banner-error" id="banner" hidden>
-      <span id="banner-text"></span>
-      <span class="spacer"></span>
-      <input id="api-base" type="text" spellcheck="false" placeholder="http://localhost:8000" />
-      <button class="btn btn-sm" id="api-save" type="button">Kết nối</button>
-      <button class="btn btn-sm" id="use-demo" type="button">Dùng dữ liệu demo</button>
-    </div>
-
     <div class="banner banner-demo" id="demo-banner" hidden>
       <strong>DỮ LIỆU DEMO</strong>
-      <span>— chưa kết nối backend; đây là bản chụp kết quả thật đã lưu sẵn, không phải dữ liệu đang chạy.</span>
+      <span id="demo-note">— chưa kết nối backend; đây là bản chụp kết quả thật đã lưu sẵn, không phải dữ liệu đang chạy.</span>
       <span class="spacer"></span>
-      <button class="btn btn-sm" id="retry-connect" type="button">Thử kết nối lại</button>
+      <input id="api-base" type="text" spellcheck="false" placeholder="http://localhost:8000" />
+      <button class="btn btn-sm" id="api-save" type="button">Kết nối backend</button>
     </div>
 
     <main class="admin-main">

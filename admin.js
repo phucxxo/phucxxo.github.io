@@ -18,8 +18,6 @@
   var fmt = SG.fmt;
   var esc = SG.esc;
 
-  var banner = document.getElementById("banner");
-  var bannerText = document.getElementById("banner-text");
   var demoBanner = document.getElementById("demo-banner");
   var apiInput = document.getElementById("api-base");
   var drawer = document.getElementById("drawer");
@@ -31,21 +29,19 @@
   /* Connection                                                              */
   /* ---------------------------------------------------------------------- */
 
-  function showError(message) {
-    bannerText.textContent = message;
-    banner.hidden = false;
-    apiInput.value = SG.baseUrl();
-  }
-
-  function enterDemo() {
+  function enterDemo(reason) {
     SG.demoMode = true;
-    banner.hidden = true;
     demoBanner.hidden = false;
-    loadAll();
+    if (reason) {
+      var tidy = /[.!?]$/.test(reason) ? reason : reason + ".";
+      document.getElementById("demo-note").textContent =
+        "— " + tidy + " Bấm Kết nối backend để dùng dữ liệu thật.";
+    }
+    apiInput.value = SG.baseUrl();
+    return loadAll();
   }
 
   function connect() {
-    banner.hidden = true;
     return SG.health()
       .then(function () {
         SG.demoMode = false;
@@ -53,9 +49,11 @@
         return loadAll();
       })
       .catch(function (error) {
-        showError(
+        // No backend reachable. Show the frozen snapshot rather than a dead
+        // end, clearly banner-labelled so nobody mistakes it for live data.
+        return enterDemo(
           error.code === "NETWORK"
-            ? "Không kết nối được backend tại " + SG.baseUrl() + "."
+            ? "không kết nối được backend tại " + SG.baseUrl() + "."
             : error.message
         );
       });
@@ -65,11 +63,8 @@
     SG.setBaseUrl(apiInput.value);
     connect();
   });
-  document.getElementById("use-demo").addEventListener("click", enterDemo);
-  document.getElementById("retry-connect").addEventListener("click", connect);
-  document.getElementById("refresh").addEventListener("click", function () {
-    SG.demoMode ? loadAll() : connect();
-  });
+
+  document.getElementById("refresh").addEventListener("click", connect);
   document.getElementById("logout").addEventListener("click", Auth.logout);
 
   /* ---------------------------------------------------------------------- */
@@ -463,7 +458,7 @@
         renderWorkflows(results[2].workflows || []);
       })
       .catch(function (error) {
-        showError(error.message);
+        return enterDemo(error.message);
       });
   }
 
